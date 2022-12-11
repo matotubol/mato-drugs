@@ -8,11 +8,12 @@ local options = {
   {
     name = 'ox:pickupweed',
     serverEvent = 'mato-drugs:checkInventory',
-    icon = 'fa-solid fa-road',
+    icon = 'fa-sharp fa-solid fa-cannabis',
     distance = 0.9,
-    label = 'Pickup Weedplant'
+    label = 'Pickup Weedplant',
   }
 }
+
 exports.ox_target:addModel(models, options)
 lib.locale()
 

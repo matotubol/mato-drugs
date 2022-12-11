@@ -19,10 +19,13 @@ RegisterServerEvent('mato-drugs:changeStateOfPlantsCount')
 RegisterServerEvent('mato-drugs:receiveZCoord')
 
 AddEventHandler('mato-drugs:checkInventory', function()
-    if exports.ox_inventory:CanCarryItem(source, 'cannabis', 1) and exports.ox_inventory:CanCarryItem(source, 'marijuana_seed', 1) then canCarryType = 'both'
+    local slot = exports.ox_inventory:GetSlot(source, 1)
+    local canExecute = false
+    if slot.name == 'hedge_shear' then canExecute = true end
+    if exports.ox_inventory:CanCarryItem(source, 'cannabis', 1) and exports.ox_inventory:CanCarryItem(source, 'marijuana_seed', 1) then canCarryType = 'both' and canExecute
         TriggerClientEvent('mato-drugs:startPickingWeed', source)
     elseif
-       exports.ox_inventory:CanCarryItem(source, 'cannabis', 1) then canCarryType = 'cannabis'
+       exports.ox_inventory:CanCarryItem(source, 'cannabis', 1) then canCarryType = 'cannabis' and canExecute
         TriggerClientEvent('mato-drugs:startPickingWeed', source)
     else
         TriggerClientEvent('mato-drugs:inventoryFull', source)
