@@ -2,10 +2,12 @@ fx_version 'cerulean'
 game 'gta5'
 
 server_scripts {
-    'server/server.lua'
+    'server/weed/server.lua',
+    'server/weed/process.lua'
 }
 client_scripts {
-    'client/client.lua'
+    'client/weed/client.lua',
+    'client/weed/process.lua'
 }
 
 shared_scripts {
