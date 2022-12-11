@@ -35,7 +35,7 @@ RegisterNetEvent('mato-drugs:receiveWeedPlant')
 RegisterNetEvent('mato-drugs:startPickingWeed')
 RegisterNetEvent('mato-drugs:inventoryFull')
 
--- GetGroundZFor_3dCoord only works when player is in render distance so we havve to create a zone and only load when player is in zone so we get the correct Z coords.
+-- GetGroundZFor_3dCoord only works when player is in render distance so we have to create a zone and only load when player is in zone so we get the correct Z coords.
 
 CreateThread(function ()
   while true do
@@ -103,19 +103,6 @@ local function isPicking()
   end
 end
 end
-end
-
-function table.contains(table, value)
-  -- Loop through the entries in the table
-  for k, v in pairs(table) do
-      -- Check if the current value matches the search value
-      if v == value then
-          -- Return true if a match is found
-          return true
-      end
-  end
-  -- Return false if no match is found
-  return nil
 end
 
 RegisterNetEvent('mato-drugs:pickWeed', function ()
