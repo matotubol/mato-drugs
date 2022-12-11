@@ -74,7 +74,7 @@ local function isPicking()
 
   if lib.progressBar
   ({
-    duration = 10000,
+    duration = 100,
     label = 'Cutting plant..',
     useWhileDead = false,
     canCancel = false,
