@@ -20,31 +20,26 @@ RegisterServerEvent('mato-drugs:receiveZCoord')
 
 
 AddEventHandler('mato-drugs:checkInventory', function()
-    local slot = exports.ox_inventory:GetSlot(source, 1)
-    local hedgeShear = exports.ox_inventory:Search(source, 1, 'hedge_shear')
+    local hedgeShear = exports.ox_inventory:Search(source, 'slots', 'hedge_shear')
     local canExecute = false
-
-    if slot == nil then return end
-    
-    if slot.name == 'hedge_shear' then canExecute = true end
-    if exports.ox_inventory:CanCarryItem(source, 'cannabis', 1) and exports.ox_inventory:CanCarryItem(source, 'marijuana_seed', 1) then canCarryType = 'both' and canExecute
-        for k, v in pairs(hedgeShear) do
-            hedgeShear = v
-            break
-        end
-        hedgeShear.metadata.durability -= 5
-        if hedgeShear.metadata.durability > 0 then
-        exports.ox_inventory:SetMetadata(source, 1, hedgeShear.metadata)
-        TriggerClientEvent('mato-drugs:startPickingWeed', source)
-        else
-        exports.ox_inventory:RemoveItem(source, 'hedge_shear', 1)
-        end
-    elseif
-       exports.ox_inventory:CanCarryItem(source, 'cannabis', 1) then canCarryType = 'cannabis' and canExecute
-        TriggerClientEvent('mato-drugs:startPickingWeed', source)
-    else
-        TriggerClientEvent('mato-drugs:inventoryFull', source)
+    for k, v in pairs(hedgeShear) do
+        hedgeShear = v
+        break
     end
+    if hedgeShear.slot ~= nil then canExecute = true end
+        if exports.ox_inventory:CanCarryItem(source, 'cannabis', 1) and exports.ox_inventory:CanCarryItem(source, 'marijuana_seed', 1) then 
+            canCarryType = 'both'
+            if hedgeShear.metadata.durability > 0 and canExecute then
+                hedgeShear.metadata.durability -= 5
+                exports.ox_inventory:SetMetadata(source, hedgeShear.slot, hedgeShear.metadata)
+                if hedgeShear.metadata.durability == 0 then 
+                    TriggerClientEvent('mato-drugs:startPickingWeed', source)
+                    exports.ox_inventory:RemoveItem(source, 'hedge_shear', 1, hedgeShear.metadata, hedgeShear.slot)
+                else
+                    TriggerClientEvent('mato-drugs:startPickingWeed', source) 
+                end
+            end
+        end
 end)
 
 AddEventHandler('mato-drugs:deleteEntity', function(object, method, index)
@@ -83,7 +78,7 @@ AddEventHandler('mato-drugs:receiveZCoord', function (index, coords, coordZ, tab
         GlobalState.plantsBackup = objectTable
         print(object)
 
-        if GlobalState.plantsSpawned == 100 then
+        if GlobalState.plantsSpawned == 10 then
             GlobalState.spawnComplete = true
             GlobalState:set('plantIds', objectTable, true)
             return end        
