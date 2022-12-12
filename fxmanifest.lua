@@ -3,7 +3,8 @@ game 'gta5'
 
 server_scripts {
     'server/weed-init.lua',
-    'server/weed-process.lua'
+    'server/weed-process.lua',
+    '@ox_core/imports/server.lua',
 }
 client_scripts {
     'client/weed-init.lua',
