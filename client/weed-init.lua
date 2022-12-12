@@ -43,7 +43,7 @@ CreateThread(function ()
     Wait(1000)
     while GlobalState.plantsSpawned == 0 and not GlobalState.spawnComplete and insideZone do
       Wait(150)
-      for i = 1, 100 do 
+      for i = 1, Config.SpawnWeedAmount do 
         local x_offset = math.random(-10.0, 20.0)
         local y_offset = math.random(-10.0, 30.0)
         local object_pos = vector3(2137.40 + x_offset, 5169.74 + y_offset, 99990.0)
@@ -53,21 +53,14 @@ CreateThread(function ()
           coords = vector3(object_pos.x, object_pos.y, newZ)
       }
         Wait(100)
-        print(GlobalState.spawnComplete)
         TriggerServerEvent('mato-drugs:receiveZCoord', i, object_pos, newZ, tableBlueprint[i])
       end
-      --Wait(60000*30)
     end
-    for i = 1, #GlobalState.plantIds do
-      print(GlobalState.plantIds[i].object)
-    end
-    Wait(1000)
-
+    Wait(Config.WeedRespawnTime)
   end
 end)
 
 local function isPicking()
-  print(GlobalState.spawnComplete)
   if GlobalState.spawnComplete then
   local playerPed = GetPlayerPed(-1)
   local PlayerPos = GetEntityCoords(playerPed)
@@ -151,7 +144,7 @@ AddEventHandler('onResourceStop', function(resource)
   end
   if GlobalState.plantIds ~= nil then
   for i = 1, #GlobalState.plantIds do
-    TriggerServerEvent('mato-drugs:deleteEntity', GlobalState.plantIds[i].object, 'none')
+    TriggerServerEvent('mato-drugs:deleteEntity',  GlobalState.plantIds[i].object, 'none')
   end
   end
     TriggerServerEvent('mato-drugs:changeStateOfPlantsCount', 0) -- set spawnObjectsCount to 0

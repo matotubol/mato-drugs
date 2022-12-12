@@ -1,6 +1,5 @@
 
 lib.locale()
-debug = true
 objectTable = {}
 canReceive = 0 -- 0 = inv full, 1 = cannabis only, 2 = weed_seed only , 3 is all | chance = 1 of ?
 rewards  = {
@@ -65,11 +64,14 @@ AddEventHandler('mato-drugs:receiveItem', function (source)
     local reward  = 'cannabis'
     local weedSeedChance = math.random(1, rewards[2].chance)
 
-    if canReceive == 3 and weedSeedChance == rewards[2].chance then reward = 'marijuana_seed' end
+    if canReceive == 3 and weedSeedChance == rewards[2].chance then
+        reward = 'marijuana_seed'
+    end
 
     exports.ox_inventory:AddItem(source, reward, 1)
-    if debug then print(json.encode(Ox.GetPlayer(source).username, { indent = true }).. ' RECEIVED '.. reward) end
-
+    if Config.Debug then
+        print(json.encode(Ox.GetPlayer(source).username, { indent = true }).. ' RECEIVED '.. reward)
+    end
 end)
 
 AddEventHandler('mato-drugs:deleteEntity', function(object, method, index)
@@ -80,29 +82,34 @@ AddEventHandler('mato-drugs:deleteEntity', function(object, method, index)
         table.remove(objectTable, index) 
         GlobalState:set('plantIds', objectTable, true)
         if GlobalState.plantsSpawned ~= 0 then GlobalState.plantsSpawned -= 1 end
+        if GlobalState.plantsSpawned == 0 then GlobalState.spawnComplete = false end
 
-        if debug then print(object..' WAS DELETED') end
+        if Config.Debug then print(object..' WAS DELETED') end
 
         if method == 'reward' then 
             TriggerEvent('mato-drugs:receiveItem', source)
         end
     else
-        if debug then print('ERROR DELETING '..object..' SEEMS LIKE IT DOES NOT EXSIST!') end
+        if Config.Debug then print('ERROR DELETING '..object..' SEEMS LIKE IT DOES NOT EXSIST!') end
     end
 end)
 
 AddEventHandler('mato-drugs:receiveZCoord', function (index, coords, coordZ, tableBlueprint)  
+    if coordZ > 1 then -- only create after valid Z is received
     local object = CreateObjectNoOffset(`prop_weed_01`, coords.x, coords.y, coordZ, true, false, true)
-
     table.insert(objectTable, index, tableBlueprint)
     objectTable[index].object = object
 
     GlobalState.plantsSpawned += 1
-    if GlobalState.plantsSpawned == 10 then
+    if GlobalState.plantsSpawned == Config.SpawnWeedAmount then
        GlobalState.spawnComplete = true
        GlobalState:set('plantIds', objectTable, true)
-    return end
-    if debug then print(index, object..' WEEDPLANT SPAWNED ') end  
+    return
+    end
+        if Config.Debug then print(index, object..' WEEDPLANT SPAWNED ') end  
+    else
+        if Config.Debug then print('INVALID Z COORD FOR WEED RECEIVED'.. coordZ) end
+    end
 end)
 
 AddEventHandler('mato-drugs:changeStateOfPlantsCount', function (newValue)

@@ -1,12 +1,14 @@
 Config = {}
 
-Config.densityMultipliers = {}
+Config.Debug = true
 
--- FiveM and RedM
-Config.densityMultipliers.ambientPeds     = 1.0
-Config.densityMultipliers.scenarioPeds    = 1.0
-Config.densityMultipliers.vehicles        = 1.0
-Config.densityMultipliers.parkedVehicles  = 1.0
-Config.densityMultipliers.randomVehicles  = 1.0
+--WEED
+Config.SpawnWeedAmount = 10
+Config.WeedRespawnTime = 60000*10 -- every 10 min
 
--- RedM only
+Config.WeedFieldCoords = {
+    x = 2137.40,
+    y = 5169.74,
+    z = 99990.0 --can be invalid we will regenerate them client side.
+}
+
