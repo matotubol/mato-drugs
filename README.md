@@ -1,20 +1,18 @@
-# mato-drugs
+### mato-drugs
 drugs system for ox 
+Server side object creation
 
-NOT PRODUCTION READY
+#Dependecies\
+ox_lib\
+ox_core\
+ox_inventory
 
-
-TODO
-
--Create Config 
-
--Add more items
-
+#TODO\
+-Create Config \
+-Add more items\
 -Create processing methods
 
-
-images
-
+images\
 https://gyazo.com/5a6e5cfe495cc5c0e9f21743c38e6da1
 ![weed_field](https://i.ibb.co/6ZsZLWC/field.png)
 Durability for shears
