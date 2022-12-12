@@ -126,12 +126,12 @@ AddEventHandler('mato-drugs:inventoryFull', function()
   })
 end)
 
-AddEventHandler('mato-drugs:startPickingWeed', function()
-  if exports.ox_inventory:Search('count', 'hedge_shear') > 0 then
+AddEventHandler('mato-drugs:startPickingWeed', function(hasShear)
+  if hasShear then
   TriggerEvent('mato-drugs:pickWeed')
   else
     lib.notify({
-      title = 'You need hedge shear!',
+      title = 'You need a hedge shear!',
       description = '',
       type = 'error'
     })

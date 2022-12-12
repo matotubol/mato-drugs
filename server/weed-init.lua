@@ -53,9 +53,11 @@ AddEventHandler('mato-drugs:checkInventory', function()
                     TriggerClientEvent('mato-drugs:startPickingWeed', source)
                     exports.ox_inventory:RemoveItem(source, 'hedge_shear', 1, hedgeShear.metadata, hedgeShear.slot)
                 else
-                    TriggerClientEvent('mato-drugs:startPickingWeed', source) 
+                    TriggerClientEvent('mato-drugs:startPickingWeed', source, true) -- true for has shear and false for no shear
                 end
             end
+                else
+                    TriggerClientEvent('mato-drugs:startPickingWeed', source, false)
         end
 end)
 
@@ -104,7 +106,6 @@ AddEventHandler('mato-drugs:receiveZCoord', function (index, coords, coordZ, tab
     if GlobalState.plantsSpawned == Config.SpawnWeedAmount then
        GlobalState.spawnComplete = true
        GlobalState:set('plantIds', objectTable, true)
-    return
     end
         if Config.Debug then print(index, object..' WEEDPLANT SPAWNED ') end  
     else
