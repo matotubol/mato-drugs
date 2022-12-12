@@ -46,7 +46,7 @@ CreateThread(function ()
       for i = 1, Config.SpawnWeedAmount do 
         local x_offset = math.random(-10.0, 20.0)
         local y_offset = math.random(-10.0, 30.0)
-        local object_pos = vector3(2137.40 + x_offset, 5169.74 + y_offset, 99990.0)
+        local object_pos = vector3(Config.WeedFieldCoords.x + x_offset, Config.WeedFieldCoords.y + y_offset, Config.WeedFieldCoords.z)
 
         ground, newZ = GetGroundZFor_3dCoord(object_pos.x, object_pos.y, object_pos.z, true)
         tableBlueprint[i] = {
