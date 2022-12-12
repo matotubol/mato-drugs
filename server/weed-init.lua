@@ -2,20 +2,6 @@
 lib.locale()
 objectTable = {}
 canReceive = 0 -- 0 = inv full, 1 = cannabis only, 2 = weed_seed only , 3 is all | chance = 1 of ?
-rewards  = {
-[1] = 
-    {
-      item = 'cannabis',
-      increment = 1,
-      chance = 1
-    },
-[2] = 
-    {
-      item = 'marijuana_seed',
-      increment = 2,
-      chance = 10
-    }
-  }
 
 CreateThread(function ()
     GlobalState.plantsSpawned = 0
@@ -34,15 +20,15 @@ AddEventHandler('mato-drugs:checkInventory', function()
     local canExecute = false
     canReceive = 0
 
-    for i = 1, #rewards do
-      if exports.ox_inventory:CanCarryItem(source, rewards[i].item, 1) then
-        canReceive += rewards[i].increment
+    for i = 1, #Config.WeedRewards do
+      if exports.ox_inventory:CanCarryItem(source, Config.WeedRewards[i].item, 1) then
+        canReceive += Config.WeedRewards[i].increment
       end
     end
 
     for k, v in pairs(hedgeShear) do
         hedgeShear = v
-        break --when found break loop and use this hedge_shear table
+        break --when found, break loop and use this hedge_shear table
     end
     if hedgeShear.slot ~= nil then canExecute = true end
         if canReceive > 0 and canExecute then 
@@ -64,9 +50,9 @@ end)
 AddEventHandler('mato-drugs:receiveItem', function (source)
     if canReceive == 0 then return end -- 0 = inv full
     local reward  = 'cannabis'
-    local weedSeedChance = math.random(1, rewards[2].chance)
+    local weedSeedChance = math.random(1, Config.WeedRewards[2].chance)
 
-    if canReceive == 3 and weedSeedChance == rewards[2].chance then
+    if canReceive == 3 and weedSeedChance == Config.WeedRewards[2].chance then
         reward = 'marijuana_seed'
     end
 

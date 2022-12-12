@@ -1,8 +1,8 @@
 local models = { `prop_weed_01` }
-local tableBlueprint = {}
-local insideZone = false
-local nearPlant
-local plantIndex
+tableBlueprint = {}
+insideZone = false
+nearPlant = nil
+plantIndex = nil
 
 local options = {
   {
@@ -67,7 +67,7 @@ local function isPicking()
 
   if lib.progressBar
   ({
-    duration = 100,
+    duration = Config.WeedPickDuration,
     label = 'Cutting plant..',
     useWhileDead = false,
     canCancel = false,
