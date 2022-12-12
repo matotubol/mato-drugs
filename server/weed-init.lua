@@ -1,9 +1,21 @@
 
 lib.locale()
-local objectTable = {}
-local seedChance
-local reward  = 'cannabis'
-local canCarryType
+objectTable = {}
+canReceive = 0 -- 0 = inv full, 1 = cannabis only, 2 = weed_seed only , 3 is all | chance = 1 of ?
+rewards  = {
+[1] = 
+    {
+      item = 'cannabis',
+      increment = 1,
+      chance = 1
+    },
+[2] = 
+    {
+      item = 'marijuana_seed',
+      increment = 2,
+      chance = 10
+    }
+  }
 
 CreateThread(function ()
     GlobalState.plantsSpawned = 0
@@ -22,17 +34,24 @@ RegisterServerEvent('mato-drugs:receiveZCoord')
 AddEventHandler('mato-drugs:checkInventory', function()
     local hedgeShear = exports.ox_inventory:Search(source, 'slots', 'hedge_shear')
     local canExecute = false
+    canReceive = 0
+
+    for i = 1, #rewards do
+      if exports.ox_inventory:CanCarryItem(source, rewards[i].item, 1) then
+        canReceive =  canReceive + rewards[i].increment
+      end
+    end
+
     for k, v in pairs(hedgeShear) do
         hedgeShear = v
         break
     end
     if hedgeShear.slot ~= nil then canExecute = true end
-        if exports.ox_inventory:CanCarryItem(source, 'cannabis', 1) and exports.ox_inventory:CanCarryItem(source, 'marijuana_seed', 1) then 
-            canCarryType = 'both'
-            if hedgeShear.metadata.durability > 0 and canExecute then
+        if canReceive > 0 and canExecute then 
+            if hedgeShear.metadata.durability > 0 then
                 hedgeShear.metadata.durability -= 5
                 exports.ox_inventory:SetMetadata(source, hedgeShear.slot, hedgeShear.metadata)
-                if hedgeShear.metadata.durability == 0 then 
+                if hedgeShear.metadata.durability <= 0 then 
                     TriggerClientEvent('mato-drugs:startPickingWeed', source)
                     exports.ox_inventory:RemoveItem(source, 'hedge_shear', 1, hedgeShear.metadata, hedgeShear.slot)
                 else
@@ -40,6 +59,18 @@ AddEventHandler('mato-drugs:checkInventory', function()
                 end
             end
         end
+end)
+
+AddEventHandler('mato-drugs:receiveItem', function (source)
+    if canReceive > 0 then
+    local reward  = 'cannabis'
+    local weedSeedChance = math.random(1, rewards[2].chance)
+
+    if canReceive == 3 and weedSeedChance == rewards[2].chance then reward = 'marijuana_seed' end
+
+    exports.ox_inventory:AddItem(source, reward, 1)
+    print(reward)
+end
 end)
 
 AddEventHandler('mato-drugs:deleteEntity', function(object, method, index)
@@ -50,38 +81,30 @@ AddEventHandler('mato-drugs:deleteEntity', function(object, method, index)
         GlobalState:set('plantIds', objectTable, true)
         if GlobalState.plantsSpawned ~= 0 then GlobalState.plantsSpawned -= 1 end
         print(object..' WAS DELETED')
-        if method == 'reward' then
-            seedChance = math.random(1, 4)
-            if seedChance == 4  and canCarryType == 'both' then reward = 'marijuana_seed' end
-        local success, response = exports.ox_inventory:AddItem(source, reward, 1)
-        print(1111)
-        if not success then
-        -- if no slots are available, the value will be "inventory_full"
-        return print(response)
-        end
+
         GlobalState.plantIds = objectTable
-    end
-    else
-        print("ERROR WHILE TRYING TO DELETE OBJECT ".. object)
+        if method == 'reward' then 
+            TriggerEvent('mato-drugs:receiveItem', source)
+        end
     end
 end)
 
 AddEventHandler('mato-drugs:receiveZCoord', function (index, coords, coordZ, tableBlueprint)  
-        local object = CreateObjectNoOffset(`prop_weed_01`, coords.x, coords.y, coordZ, true, false, true)
+    local object = CreateObjectNoOffset(`prop_weed_01`, coords.x, coords.y, coordZ, true, false, true)
 
-        table.insert(objectTable, index, tableBlueprint)
-        objectTable[index].object = object
-    
-        GlobalState.plantsSpawned += 1
+    table.insert(objectTable, index, tableBlueprint)
+    objectTable[index].object = object
 
-        GlobalState.plantIds = objectTable
-        GlobalState.plantsBackup = objectTable
-        print(object)
+    GlobalState.plantsSpawned += 1
 
-        if GlobalState.plantsSpawned == 10 then
-            GlobalState.spawnComplete = true
-            GlobalState:set('plantIds', objectTable, true)
-            return end        
+    GlobalState.plantIds = objectTable
+    GlobalState.plantsBackup = objectTable
+    print(object)
+
+    if GlobalState.plantsSpawned == 10 then
+        GlobalState.spawnComplete = true
+        GlobalState:set('plantIds', objectTable, true)
+        return end        
 end)
 
 AddEventHandler('mato-drugs:changeStateOfPlantsCount', function (newValue)
