@@ -11,7 +11,6 @@ end)
 
 RegisterServerEvent('mato-drugs:deleteEntity')
 RegisterServerEvent('mato-drugs:checkInventory')
-RegisterServerEvent('mato-drugs:receiveWeedPlant')
 RegisterServerEvent('mato-drugs:changeStateOfPlantsCount')
 RegisterServerEvent('mato-drugs:receiveZCoord')
 
@@ -33,7 +32,7 @@ AddEventHandler('mato-drugs:checkInventory', function()
     if hedgeShear.slot ~= nil then canExecute = true end
         if canReceive > 0 and canExecute then 
             if hedgeShear.metadata.durability > 0 then
-                hedgeShear.metadata.durability -= 5
+                hedgeShear.metadata.durability -= Config.WeedHedgeShearDamage
                 exports.ox_inventory:SetMetadata(source, hedgeShear.slot, hedgeShear.metadata)
                 if hedgeShear.metadata.durability <= 0 then 
                     TriggerClientEvent('mato-drugs:startPickingWeed', source)
@@ -99,6 +98,6 @@ AddEventHandler('mato-drugs:receiveZCoord', function (index, coords, coordZ, tab
     end
 end)
 
-AddEventHandler('mato-drugs:changeStateOfPlantsCount', function (newValue)
-    GlobalState.plantsSpawned = GlobalState.plantsSpawned + newValue
+AddEventHandler('mato-drugs:changeStateOfPlantsCount', function (increment)
+    GlobalState.plantsSpawned += increment
 end)

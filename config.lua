@@ -3,9 +3,10 @@ Config = {}
 Config.Debug = false
 
 --WEED
-Config.SpawnWeedAmount  = 10
-Config.WeedRespawnTime  = 60000*10 -- every 10 min
-Config.WeedPickDuration = 10000
+Config.SpawnWeedAmount          = 10
+Config.WeedRespawnTime          = 60000*10 -- every 10 min
+Config.WeedPickDuration         = 10000
+Config.WeedHedgeShearDamage     = 5 --how much durability will be taken every time
 
 Config.WeedFieldCoords = {
     x = 2137.40,
