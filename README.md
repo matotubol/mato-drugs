@@ -5,7 +5,8 @@ Server side object creation
 #Dependecies\
 ox_lib\
 ox_core\
-ox_inventory
+ox_inventory\
+ox_target
 
 #TODO\
 -Create Config \
