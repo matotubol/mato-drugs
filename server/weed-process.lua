@@ -17,8 +17,9 @@ AddEventHandler('mato-drugs:completeProccess', function (rewardCount, plantCount
             exports.ox_inventory:SetMetadata(source, inventoryScissors.slot, inventoryScissors.metadata)
         else
             rewardCount -= math.abs(inventoryScissors.metadata.durability - (5 * plantCount))
-            exports.ox_inventory:RemoveItem(source, 'trimming_scissors', 1, inventoryScissors.metadata, inventoryScissors.slot)
-            freeWeight += exports.ox_inventory:GetItem(source, 'trimming_scissors', nil, false).weight
+            if exports.ox_inventory:RemoveItem(source, 'trimming_scissors', 1, inventoryScissors.metadata, inventoryScissors.slot) then
+                freeWeight += exports.ox_inventory:GetItem(source, 'trimming_scissors', nil, false).weight
+            end
         end
     end
     if rewardCount > freeWeight then rewardCount = freeWeight end
@@ -27,10 +28,7 @@ AddEventHandler('mato-drugs:completeProccess', function (rewardCount, plantCount
         exports.ox_inventory:RemoveItem(source, 'cannabis', plantCount)
 
     if rewardCount > 0 then exports.ox_inventory:AddItem(source, 'weed_1g', rewardCount) end
-
     if weedBagsAmount > 0 then
         exports.ox_inventory:AddItem(source, 'weed_3.5', weedBagsAmount)
     end
-
-    print(weedBagsAmount, rewardCount)
 end)
