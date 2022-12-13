@@ -18,6 +18,7 @@ AddEventHandler('mato-drugs:completeProccess', function (rewardCount, plantCount
         else
             rewardCount -= math.abs(inventoryScissors.metadata.durability - (5 * plantCount))
             exports.ox_inventory:RemoveItem(source, 'trimming_scissors', 1, inventoryScissors.metadata, inventoryScissors.slot)
+            freeWeight += exports.ox_inventory:GetItem(source, 'trimming_scissors', nil, false).weight
         end
     end
     if rewardCount > freeWeight then rewardCount = freeWeight end
