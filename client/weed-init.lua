@@ -15,6 +15,7 @@ local options = {
 }
 
 exports.ox_target:addModel(models, options)
+
 lib.locale()
 
 function inside(self)
@@ -29,10 +30,13 @@ lib.zones.sphere({
   inside = inside
 })
 
+RegisterCommand('drugs-teleport', function ()
+    SetEntityCoords(PlayerPedId(), vector3(1409.04000000,3666.78100000,33.05161000))
+end)
+
 RegisterNetEvent('mato-drugs:receiveZCoord')
 RegisterNetEvent('mato-drugs:deleteEntity')
 RegisterNetEvent('mato-drugs:changeStateOfPlantsCount')
-RegisterNetEvent('mato-drugs:receiveWeedPlant')
 RegisterNetEvent('mato-drugs:startPickingWeed')
 RegisterNetEvent('mato-drugs:inventoryFull')
 

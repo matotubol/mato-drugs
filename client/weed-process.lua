@@ -34,11 +34,11 @@ local options = {
                 description = 'Takes 8 loops and 20 seconds',
                 event = 'testevent',
                 onSelect = function ()
-                    TriggerEvent('mato-drugs:checkInventoryHasScissors', 2, 10)
+                    TriggerEvent('mato-drugs:checkInventoryHasScissors', 1, 10)
                 end,
                 metadata = {
                     '10 x Weedplant',
-                    '2 x Trimming scissors'
+                    '1 x Trimming scissors'
                 }
             }
         }
@@ -75,16 +75,16 @@ AddEventHandler('mato-drugs:checkInventoryHasScissors', function (scissors, plan
     local playerPlantCount   = exports.ox_inventory:Search('count', 'cannabis')
     if playerScissorCount >= scissors and playerPlantCount >= plantCount then
         local reward  = math.random(1, 20)
-        if scissors == 1 then
+        if plantCount == 1 then
             StartTrimming(1000)
             TriggerServerEvent('mato-drugs:completeProccess', reward, plantCount)
-        elseif scissors == 2 then
+        elseif plantCount == 10 then
             for i = 1, plantCount do
-                reward += math.random(1, 20) -- max reward can be 200gram
+                reward += math.random(1, 50) -- max reward can be 500 gram
             end
             local skillCheck = lib.skillCheck({'easy', 'medium', 'easy', 'medium', 'easy','medium','medium','medium' ,{areaSize = 70, speedMultiplier = 1.1}, 'medium'})
         if skillCheck then
-            StartTrimming(20000)
+            StartTrimming(100)
             TriggerServerEvent('mato-drugs:completeProccess', reward, plantCount)
         end
     end
