@@ -12,6 +12,7 @@ ox_target
 -Create Config \
 -Add more items\
 -Create processing methods
+-?Create level system for proccessing that will increase the reward
 
 images\
 https://gyazo.com/5a6e5cfe495cc5c0e9f21743c38e6da1
