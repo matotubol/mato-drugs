@@ -22,23 +22,13 @@ AddEventHandler('mato-drugs:completeProccess', function (rewardCount, plantCount
 
         end
     end
+        weedBagsAmount = rewardCount / 100 - rewardCount % 100 -- because 1 bag is 100gram
+        rewardCount    = rewardCount % 100
 
-    if rewardCount >= 100 and freeWeight >= 100 then
-        for i = 1, plantCount do
-            if rewardCount - 100 >= 0 and freeWeight - 100 >= 0 then 
-                freeWeight  -= 100
-                rewardCount -= 100
-                weedBagsAmount += 1
-            else
-                rewardCount = rewardCount
-                break
-            end
-        end
-    end
     if rewardCount > freeWeight then rewardCount = freeWeight end
         if rewardCount > 0 then exports.ox_inventory:AddItem(source, 'weed_1g', rewardCount) end
         exports.ox_inventory:RemoveItem(source, 'cannabis', plantCount)
-        
+
     if weedBagsAmount > 0 then
         exports.ox_inventory:AddItem(source, 'weed_3.5', weedBagsAmount)
     end
