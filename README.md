@@ -18,5 +18,6 @@ https://gyazo.com/5a6e5cfe495cc5c0e9f21743c38e6da1
 ![weed_field](https://i.ibb.co/6ZsZLWC/field.png)
 Durability for shears
 
-![weed_inv](https://i.gyazo.com/bff3c343372a2de8923da9970c7b50fd.png)
+![weed_inv](https://i.gyazo.com/7b3334cc40bf69797b91032c9d04e1b1.png)
+![weed_menu](https://i.gyazo.com/d25f426ec950cde87907ca3e60dea5c6.jpg)
 
