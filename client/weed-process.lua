@@ -11,8 +11,7 @@ local options = {
   exports.ox_target:addModel(model, options)
   lib.locale()
 
-  RegisterNetEvent('mato-drugs:startProccessingWeed', function(data)
-    print(json.encode(data, {indent=true}))
+  RegisterNetEvent('mato-drugs:startProccessingWeed', function()
     lib.registerContext({
         id = 'weed_proccessing',
         title = 'Weed Proccessing',
@@ -23,7 +22,7 @@ local options = {
                 icon = 'fa-sharp fa-solid fa-cannabis',
                 description = 'Takes 8 seconds',
                 onSelect = function()
-                    TriggerEvent('mato-drugs:checkInventoryHasScissors', 1)
+                    TriggerEvent('mato-drugs:checkInventoryHasScissors', 1, 1)
                   end,
                 metadata = {
                     '1 x Weedplant',
@@ -32,10 +31,10 @@ local options = {
             },
             ['Proccess 10 weedplants'] = {
                 icon = 'fa-sharp fa-solid fa-cannabis',
-                description = 'Takes 8 loops and 5 seconds',
+                description = 'Takes 8 loops and 20 seconds',
                 event = 'testevent',
                 onSelect = function ()
-                    TriggerEvent('mato-drugs:checkInventoryHasScissors', 2)
+                    TriggerEvent('mato-drugs:checkInventoryHasScissors', 2, 10)
                 end,
                 metadata = {
                     '10 x Weedplant',
@@ -47,24 +46,52 @@ local options = {
     lib.showContext('weed_proccessing')
 end)
 
-AddEventHandler('mato-drugs:checkInventoryHasScissors', function (amount)
-    local count = exports.ox_inventory:Search('count', 'trimming_scissors')
-    if count >= amount then
-        if amount == 2 then
-            local skillCheck = lib.skillCheck({'easy', 'medium', 'easy', 'medium', 'easy','medium','medium','medium' ,{areaSize = 70, speedMultiplier = 1.1}, 'medium'})
-            if skillCheck then 
-                --TriggerServerEvent('mato-drugs:someEvent', )
+local function StartTrimming(time)
+    lib.progressBar
+    ({
+      duration = time,
+      label = 'Trimming plant..',
+      useWhileDead = false,
+      canCancel = false,
+      disable = {
+        move = true,
+        car = true,
+        combat = true,
+      },
+      anim = {
+        dict = 'amb@world_human_gardener_plant@male@base',
+        clip = 'base',
+      },
+      prop = {
+        model = `prop_cs_scissors`,
+        pos = vec3(0.03, 0.03, 0.02),
+        rot = vec3(0.0, 0.0, -1.5) 
+    },
+  })
+end
+
+AddEventHandler('mato-drugs:checkInventoryHasScissors', function (scissors, plantCount)
+    local playerScissorCount = exports.ox_inventory:Search('count', 'trimming_scissors')
+    local playerPlantCount   = exports.ox_inventory:Search('count', 'cannabis')
+    if playerScissorCount >= scissors and playerPlantCount >= plantCount then
+        local reward  = math.random(1, 20)
+        if scissors == 1 then
+            StartTrimming(1000)
+            TriggerServerEvent('mato-drugs:completeProccess', reward, plantCount)
+        elseif scissors == 2 then
+            for i = 1, plantCount do
+                reward += math.random(1, 20) -- max reward can be 200gram
             end
-        lib.notify({
-            title = '',
-            description = 'Started trimming..',
-            type = 'success'
-          })
+            local skillCheck = lib.skillCheck({'easy', 'medium', 'easy', 'medium', 'easy','medium','medium','medium' ,{areaSize = 70, speedMultiplier = 1.1}, 'medium'})
+        if skillCheck then
+            StartTrimming(20000)
+            TriggerServerEvent('mato-drugs:completeProccess', reward, plantCount)
         end
-        else
+    end
+    else
         lib.notify({
-            title = '',
-            description = 'You dont have the required items',
+            title = 'ERROR',
+            description = 'You dont have the required items.',
             type = 'error'
         })
     end
