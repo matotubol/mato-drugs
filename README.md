@@ -11,7 +11,7 @@ ox_target
 #TODO\
 -Create Config \
 -Add more items\
--Create processing methods
+-Create processing methods\
 -?Create level system for proccessing that will increase the reward
 
 images\
