@@ -2,17 +2,17 @@ RegisterServerEvent('mato-drugs:completeProccess')
 
 local function calculateLevel(xp)
     local startLevel = 10
-    local level = 0
+    local table = {level = 0, nextlevel = 0}
     for i = 1, xp do
       if startLevel > xp then
-        nextLevel = startLevel
+        table.nextLevel = startLevel
         break
       else
-        startLevel = startLevel * 2
-        level = level + 1
+        startLevel *= 2
+        table.level += 1
       end
     end  
-        return level
+        return table
     end
 
 AddEventHandler('mato-drugs:completeProccess', function (rewardCount, plantCount)
@@ -51,7 +51,7 @@ AddEventHandler('mato-drugs:completeProccess', function (rewardCount, plantCount
 
     local xpLevel = MySQL.single.await('SELECT weed_xp FROM mato_drugs WHERE identifier = ?', {player.userid})
     if xpLevel then
-        print(calculateLevel(xpLevel.weed_xp))
+        print('Level '..calculateLevel(xpLevel.weed_xp).level, 'Next level XP = '..calculateLevel(xpLevel.weed_xp).nextLevel)
         MySQL.update.await('UPDATE mato_drugs SET weed_xp = weed_xp + ? WHERE identifier = ?', {plantCount, player.userid})
     else
         MySQL.insert.await('INSERT INTO mato_drugs (identifier, weed_xp) VALUES (?, ?)', {player.userid, 0})
