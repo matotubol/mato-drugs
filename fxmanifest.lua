@@ -5,6 +5,7 @@ server_scripts {
     'server/weed-init.lua',
     'server/weed-process.lua',
     '@ox_core/imports/server.lua',
+    '@oxmysql/lib/MySQL.lua',
 }
 client_scripts {
     'client/weed-init.lua',
@@ -16,10 +17,9 @@ shared_scripts {
     'config.lua',
 }
 
-files {
-	'stream/mw_props.ytyp'
-}
-
-data_file 'DLC_ITYP_REQUEST' 'stream/mw_props.ytyp'
-
 lua54 'yes'
+
+dependencies {
+	'oxmysql',
+	'ox_lib',
+}

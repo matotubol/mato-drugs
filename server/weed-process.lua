@@ -1,10 +1,27 @@
 RegisterServerEvent('mato-drugs:completeProccess')
 
+local function calculateLevel(xp)
+    local startLevel = 10
+    local level = 0
+    for i = 1, xp do
+      if startLevel > xp then
+        nextLevel = startLevel
+        break
+      else
+        startLevel = startLevel * 2
+        level = level + 1
+      end
+    end  
+        return level
+    end
+
 AddEventHandler('mato-drugs:completeProccess', function (rewardCount, plantCount)
     local inventory = exports.ox_inventory:GetInventory(source, true)
     local freeWeight = inventory.maxWeight - inventory.weight + (exports.ox_inventory:GetItem(source, 'cannabis', nil, false).weight * plantCount)
     local inventoryScissors = exports.ox_inventory:Search(source, 'slots', 'trimming_scissors')
     local weedBagsAmount = 0 -- 3.5 oz bag
+    local player = Ox.GetPlayer(source)
+
 
     for k, v in pairs(inventoryScissors) do
         inventoryScissors = v
@@ -30,5 +47,13 @@ AddEventHandler('mato-drugs:completeProccess', function (rewardCount, plantCount
     if rewardCount > 0 then exports.ox_inventory:AddItem(source, 'weed_1g', rewardCount) end
     if weedBagsAmount > 0 then
         exports.ox_inventory:AddItem(source, 'weed_3.5', weedBagsAmount)
+    end
+
+    local xpLevel = MySQL.single.await('SELECT weed_xp FROM mato_drugs WHERE identifier = ?', {player.userid})
+    if xpLevel then
+        print(calculateLevel(xpLevel.weed_xp))
+        MySQL.update.await('UPDATE mato_drugs SET weed_xp = weed_xp + ? WHERE identifier = ?', {plantCount, player.userid})
+    else
+        MySQL.insert.await('INSERT INTO mato_drugs (identifier, weed_xp) VALUES (?, ?)', {player.userid, 0})
     end
 end)
