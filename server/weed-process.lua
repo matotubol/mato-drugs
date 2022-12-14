@@ -27,33 +27,33 @@ AddEventHandler('mato-drugs:completeProccess', function (rewardCount, plantCount
         break
     end
 
-    if inventoryScissors.slot ~= nil then
-        if inventoryScissors.metadata.durability - 5 * plantCount > 0 then
-            inventoryScissors.metadata.durability -= 5 * plantCount
-            exports.ox_inventory:SetMetadata(source, inventoryScissors.slot, inventoryScissors.metadata)
-        else
-            rewardCount -= math.abs(inventoryScissors.metadata.durability - (5 * plantCount))
-            if exports.ox_inventory:RemoveItem(source, 'trimming_scissors', 1, inventoryScissors.metadata, inventoryScissors.slot) then
-                freeWeight += exports.ox_inventory:GetItem(source, 'trimming_scissors', nil, false).weight
-            end
+-- Check if the scissors are in the inventory
+if inventoryScissors.slot ~= nil then
+    -- Calculate the amount to subtract from the durability
+    local subtractAmount = 5 * plantCount
+
+    if inventoryScissors.metadata.durability >= subtractAmount then
+        inventoryScissors.metadata.durability -= subtractAmount
+        exports.ox_inventory:SetMetadata(source, inventoryScissors.slot, inventoryScissors.metadata)
+    else
+        rewardCount -= math.abs(inventoryScissors.metadata.durability - subtractAmount)
+        if exports.ox_inventory:RemoveItem(source, 'trimming_scissors', 1, inventoryScissors.metadata, inventoryScissors.slot) then
+            local scissorsWeight = exports.ox_inventory:GetItem(source, 'trimming_scissors', nil, false).weight
+            freeWeight += scissorsWeight
         end
     end
+end
     if rewardCount > freeWeight then rewardCount = freeWeight end
         weedBagsAmount = math.floor(rewardCount / 100)
-        rewardCount    = rewardCount % 100 -- gets the reminder
+        -- Get the reminder
+        rewardCount    = rewardCount % 100
         exports.ox_inventory:RemoveItem(source, 'cannabis', plantCount)
 
     if rewardCount > 0 then exports.ox_inventory:AddItem(source, 'weed_1g', rewardCount) end
     if weedBagsAmount > 0 then
         exports.ox_inventory:AddItem(source, 'weed_3.5', weedBagsAmount)
     end
-
-    local xpLevel = MySQL.single.await('SELECT weed_xp FROM mato_drugs WHERE identifier = ?', {player.userid})
-    if xpLevel then
-        print('level', calculateLevel(xpLevel.weed_xp).level, '%'.. getLevelPercentage(xpLevel.weed_xp))
-
-        MySQL.update.await('UPDATE mato_drugs SET weed_xp = weed_xp + ? WHERE identifier = ?', {plantCount, player.userid})
-    else
-        MySQL.insert.await('INSERT INTO mato_drugs (identifier, weed_xp) VALUES (?, ?)', {player.userid, 0})
-    end
-end)
+    local xpLevel = MySQL.single.await('SELECT weed_xp FROM mato_drugs WHERE identifier = ? FOR UPDATE', {player.userid})
+        if xpLevel then print('level', calculateLevel(xpLevel.weed_xp).level, '%'.. getLevelPercentage(xpLevel.weed_xp)) end
+        MySQL.prepare.await('INSERT INTO mato_drugs (identifier, weed_xp) VALUES (?, ?) ON DUPLICATE KEY UPDATE weed_xp = weed_xp + ?', {player.userid, 10, plantCount})
+    end)

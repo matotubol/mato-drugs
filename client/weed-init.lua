@@ -90,13 +90,15 @@ local function isPicking()
       rot = vec3(0.0, 0.0, -1.5) 
   },
 }) then
-  for i=1, #GlobalState.plantIds do
-    local distance = Vdist2(PlayerPos, GlobalState.plantIds[i].coords)
+  local distance
+  for i = 1, #GlobalState.plantIds do
+    distance = GetDistanceBetweenCoords(PlayerPos, GlobalState.plantIds[i].coords, true)
     if distance < 2 then
       if GlobalState.plantIds[i].object ~= nil then
         nearPlant = GlobalState.plantIds[i].object
         plantIndex = i
       end
+      break
     end
   end
 end
